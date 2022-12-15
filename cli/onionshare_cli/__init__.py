@@ -85,7 +85,7 @@ class OnionShareCli:
         print("Starting Receive Mode...")
         app = OnionShare(self.common, self.onion, False, 0)
         app.choose_port()
-        app.start_onion_service("share", self.mode_settings, True)
+        app.start_onion_service("receive", self.mode_settings, True)
         url = f"http://{app.onion_host}"
         print(f"Your OnionShare URL is: {url}")
         #print(app.auth_string)
@@ -148,7 +148,9 @@ class OnionShareCli:
 
 
 
-
+    def share(self):
+        # share files using OnionShare
+        pass
 
 
 
