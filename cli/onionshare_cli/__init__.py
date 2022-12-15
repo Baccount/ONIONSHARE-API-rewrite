@@ -37,16 +37,14 @@ class OnionShareCli:
     def __init__(self):
         self.common = Common()
         self.mode_settings = ModeSettings(self.common)
-        self.mode_settings.set
         
     
     
-    def runWeb(self):
-        # Create the Web object
+    def createOnion(self, mode):
+        # Modes: share, receive, website, chat
         print("Starting web service...")
-        self.web = Web(self.common, False, self.mode_settings, "receive")
-    
-    def createOnion(self):
+        self.web = Web(self.common, False, self.mode_settings, mode)
+        
         # Start the Onion object
         print("Starting Onion service...")
         try:
@@ -147,6 +145,25 @@ class OnionShareCli:
         # disable_csp = bool(args.disable_csp)
         # custom_csp = args.custom_csp
         # verbose = bool(args.verbose)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def start():
         
@@ -596,6 +613,5 @@ def main(cwd=None):
 
 # DELETE ME _________________________________________________________________________________________
 new_onion = OnionShareCli()
-new_onion.runWeb()
-new_onion.createOnion()
+new_onion.createOnion(mode="receive")
 new_onion.receive()
