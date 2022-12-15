@@ -34,26 +34,33 @@ from .mode_settings import ModeSettings
 
 
 class OnionShareCli:
+    def __init__(self):
+        self.common = Common()
+        self.mode_settings = ModeSettings(self.common)
+        self.mode_settings.set
+        
     
-    def receive(self):
-        common = Common()
-        mode_settings = ModeSettings(common)
-        mode_settings.set
+    
+    def runWeb(self):
         # Create the Web object
-        web = Web(common, False, mode_settings, "receive")
+        print("Starting web service...")
+        self.web = Web(self.common, False, self.mode_settings, "receive")
+    
+    def createOnion(self):
         # Start the Onion object
+        print("Starting Onion service...")
         try:
-            onion = Onion(common, use_tmp_dir=True)
+            self.onion = Onion(self.common, use_tmp_dir=True)
         except CannotFindTor:
             print("You must install tor to use OnionShare from the command line")
-            if common.platform == "Darwin":
+            if self.common.platform == "Darwin":
                 print("In macOS, you can do this with Homebrew (https://brew.sh):")
                 print("  brew install tor")
             sys.exit()
         
             # connect the onion
         try:
-            onion.connect(
+            self.onion.connect(
                 custom_settings=False,
                 config=None,
                 connect_timeout=120,
@@ -66,21 +73,27 @@ class OnionShareCli:
             sys.exit()
         
         # set socks
-        (socks_address, socks_port) = onion.get_tor_socks_port()
-        web.proxies = {
+        (socks_address, socks_port) = self.onion.get_tor_socks_port()
+        self.web.proxies = {
                     "http": f"socks5h://{socks_address}:{socks_port}",
                     "https": f"socks5h://{socks_address}:{socks_port}",
                 }
+    
+    
+    
+    def receive(self):
+        # Receive mode
         # start the app
-        app = OnionShare(common, onion, False, 0)
+        print("Starting Receive Mode...")
+        app = OnionShare(self.common, self.onion, False, 0)
         app.choose_port()
-        app.start_onion_service("share", mode_settings, True)
+        app.start_onion_service("share", self.mode_settings, True)
         url = f"http://{app.onion_host}"
         print(f"Your OnionShare URL is: {url}")
         #print(app.auth_string)
         try:  # Trap Ctrl-C
             # Start OnionShare http service in new thread
-            t = threading.Thread(target=web.start, args=(app.port,))
+            t = threading.Thread(target=self.web.start, args=(app.port,))
             t.daemon = True
             t.start()
             # Wait for app to close
@@ -90,11 +103,11 @@ class OnionShareCli:
                 time.sleep(0.2)
         
         except KeyboardInterrupt:
-            web.stop(app.port)
+            self.web.stop(app.port)
         finally:
             # Shutdown
-            web.cleanup()
-            onion.cleanup()
+            self.web.cleanup()
+            self.onion.cleanup()
         
         
         
@@ -583,4 +596,6 @@ def main(cwd=None):
 
 # DELETE ME _________________________________________________________________________________________
 new_onion = OnionShareCli()
+new_onion.runWeb()
+new_onion.createOnion()
 new_onion.receive()
