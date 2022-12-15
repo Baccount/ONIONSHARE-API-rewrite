@@ -38,6 +38,7 @@ class OnionShareCli:
     def receive(self):
         common = Common()
         mode_settings = ModeSettings(common)
+        mode_settings.set
         # Create the Web object
         web = Web(common, False, mode_settings, "receive")
         # Start the Onion object
@@ -76,18 +77,24 @@ class OnionShareCli:
         app.start_onion_service("share", mode_settings, True)
         url = f"http://{app.onion_host}"
         print(f"Your OnionShare URL is: {url}")
-        print(app.auth_string)
+        #print(app.auth_string)
+        try:  # Trap Ctrl-C
+            # Start OnionShare http service in new thread
+            t = threading.Thread(target=web.start, args=(app.port,))
+            t.daemon = True
+            t.start()
+            # Wait for app to close
+            while t.is_alive():
+                # Allow KeyboardInterrupt exception to be handled with threads
+                # https://stackoverflow.com/questions/3788208/python-threading-ignores-keyboardinterrupt-exception
+                time.sleep(0.2)
         
-        # Start OnionShare http service in new thread
-        t = threading.Thread(target=web.start, args=(app.port,))
-        t.daemon = True
-        t.start()
-        # Wait for app to close
-        while t.is_alive():
-            # Allow KeyboardInterrupt exception to be handled with threads
-            # https://stackoverflow.com/questions/3788208/python-threading-ignores-keyboardinterrupt-exception
-            time.sleep(0.2)
-        
+        except KeyboardInterrupt:
+            web.stop(app.port)
+        finally:
+            # Shutdown
+            web.cleanup()
+            onion.cleanup()
         
         
         

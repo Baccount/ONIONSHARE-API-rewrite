@@ -43,7 +43,7 @@ class ModeSettings:
             "persistent": {"mode": None, "enabled": False},
             "general": {
                 "title": None,
-                "public": False,
+                "public": True,
                 "autostart_timer": False,
                 "autostop_timer": False,
                 "service_id": None,
