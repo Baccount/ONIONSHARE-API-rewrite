@@ -33,7 +33,45 @@ from .onionshare import OnionShare
 from .mode_settings import ModeSettings
 
 
+class OnionShareCli:
+    # init 
+    def __init__(self):
+        self.common = Common()
+
+        
+        receive = bool(args.receive)
+        website = bool(args.website)
+        chat = bool(args.chat)
+        local_only = bool(args.local_only)
+        connect_timeout = int(args.connect_timeout)
+        config_filename = args.config
+        persistent_filename = args.persistent
+        title = args.title
+        public = bool(args.public)
+        autostart_timer = int(args.autostart_timer)
+        autostop_timer = int(args.autostop_timer)
+        autostop_sharing = not bool(args.no_autostop_sharing)
+        data_dir = args.data_dir
+        webhook_url = args.webhook_url
+        disable_text = args.disable_text
+        disable_files = args.disable_files
+        disable_csp = bool(args.disable_csp)
+        custom_csp = args.custom_csp
+        verbose = bool(args.verbose)
+
+
+
+
+
+
+
+
+
+
+
+
 def main(cwd=None):
+    
     """
     The main() function implements all of the logic that the command-line version of
     onionshare uses.
@@ -45,6 +83,134 @@ def main(cwd=None):
     if common.platform == "Darwin":
         if cwd:
             os.chdir(cwd)
+
+    # Parse arguments
+    parser = argparse.ArgumentParser(
+        formatter_class=lambda prog: argparse.HelpFormatter(prog, max_help_position=28)
+    )
+    # Select modes
+    parser.add_argument(
+        "--receive", action="store_true", dest="receive", help="Receive files"
+    )
+    parser.add_argument(
+        "--website", action="store_true", dest="website", help="Publish website"
+    )
+    parser.add_argument(
+        "--chat", action="store_true", dest="chat", help="Start chat server"
+    )
+    # Tor connection-related args
+    parser.add_argument(
+        "--local-only",
+        action="store_true",
+        dest="local_only",
+        default=False,
+        help="Don't use Tor (only for development)",
+    )
+    parser.add_argument(
+        "--connect-timeout",
+        metavar="SECONDS",
+        dest="connect_timeout",
+        default=120,
+        help="Give up connecting to Tor after a given amount of seconds (default: 120)",
+    )
+    parser.add_argument(
+        "--config",
+        metavar="FILENAME",
+        default=None,
+        help="Filename of custom global settings",
+    )
+    # Persistent file
+    parser.add_argument(
+        "--persistent",
+        metavar="FILENAME",
+        default=None,
+        help="Filename of persistent session",
+    )
+    # General args
+    parser.add_argument("--title", metavar="TITLE", default=None, help="Set a title")
+    parser.add_argument(
+        "--public",
+        action="store_true",
+        dest="public",
+        default=False,
+        help="Don't use a private key",
+    )
+    parser.add_argument(
+        "--auto-start-timer",
+        metavar="SECONDS",
+        dest="autostart_timer",
+        default=0,
+        help="Start onion service at scheduled time (N seconds from now)",
+    )
+    parser.add_argument(
+        "--auto-stop-timer",
+        metavar="SECONDS",
+        dest="autostop_timer",
+        default=0,
+        help="Stop onion service at schedule time (N seconds from now)",
+    )
+    # Share args
+    parser.add_argument(
+        "--no-autostop-sharing",
+        action="store_true",
+        dest="no_autostop_sharing",
+        default=False,
+        help="Share files: Continue sharing after files have been sent (default is to stop sharing)",
+    )
+    # Receive args
+    parser.add_argument(
+        "--data-dir",
+        metavar="data_dir",
+        default=None,
+        help="Receive files: Save files received to this directory",
+    )
+    parser.add_argument(
+        "--webhook-url",
+        metavar="webhook_url",
+        default=None,
+        help="Receive files: URL to receive webhook notifications",
+    )
+    parser.add_argument(
+        "--disable-text",
+        action="store_true",
+        dest="disable_text",
+        help="Receive files: Disable receiving text messages",
+    )
+    parser.add_argument(
+        "--disable-files",
+        action="store_true",
+        dest="disable_files",
+        help="Receive files: Disable receiving files",
+    )
+    # Website args
+    parser.add_argument(
+        "--disable_csp",
+        action="store_true",
+        dest="disable_csp",
+        default=False,
+        help="Publish website: Disable the default Content Security Policy header (allows your website to use third-party resources)",
+    )
+    parser.add_argument(
+        "--custom_csp",
+        metavar="custom_csp",
+        default=None,
+        help="Publish website: Set a custom Content Security Policy header",
+    )
+    # Other
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        dest="verbose",
+        help="Log OnionShare errors to stdout, and web errors to disk",
+    )
+    parser.add_argument(
+        "filename",
+        metavar="filename",
+        nargs="*",
+        help="List of files or folders to share",
+    )
+    args = parser.parse_args()
 
     filenames = args.filename
     for i in range(len(filenames)):
