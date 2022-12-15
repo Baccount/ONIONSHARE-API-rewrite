@@ -150,8 +150,30 @@ class OnionShareCli:
 
     def share(self):
         # share files using OnionShare
-        pass
-
+        print("Starting Share Mode...")
+        app = OnionShare(self.common, self.onion, False, 0)
+        app.choose_port()
+        app.start_onion_service("share", self.mode_settings, True)
+        url = f"http://{app.onion_host}"
+        print(f"Your OnionShare URL is: {url}")
+        #print(app.auth_string)
+        try:  # Trap Ctrl-C
+            # Start OnionShare http service in new thread
+            t = threading.Thread(target=self.web.start, args=(app.port,))
+            t.daemon = True
+            t.start()
+            # Wait for app to close
+            while t.is_alive():
+                # Allow KeyboardInterrupt exception to be handled with threads
+                # https://stackoverflow.com/questions/3788208/python-threading-ignores-keyboardinterrupt-exception
+                time.sleep(0.2)
+        
+        except KeyboardInterrupt:
+            self.web.stop(app.port)
+        finally:
+            # Shutdown
+            self.web.cleanup()
+            self.onion.cleanup()
 
 
 
@@ -615,5 +637,19 @@ def main(cwd=None):
 
 # DELETE ME _________________________________________________________________________________________
 new_onion = OnionShareCli()
-new_onion.createOnion(mode="receive")
-new_onion.receive()
+new_onion.createOnion(mode="share")
+new_onion.share()
+
+
+
+
+
+
+
+
+
+
+
+
+
+# new_onion.receive()
