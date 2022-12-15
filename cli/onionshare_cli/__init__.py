@@ -37,6 +37,8 @@ class OnionShareCli:
     def __init__(self):
         self.common = Common()
         self.mode_settings = ModeSettings(self.common)
+        # Verbose mode?
+        self.common.verbose = True
         
     
     
@@ -224,8 +226,7 @@ class OnionShareCli:
         for i in range(len(filenames)):
             filenames[i] = os.path.abspath(filenames[i])
 
-        # Verbose mode?
-        common.verbose = verbose
+
 
         # Re-load settings, if a custom config was passed in
         if config_filename:
@@ -667,7 +668,7 @@ def main(cwd=None):
 # DELETE ME _________________________________________________________________________________________
 new_onion = OnionShareCli()
 new_onion.createOnion(mode="share")
-new_onion.setFilenames(["/Users/brandon/Documents/Résumé.docx"])
+new_onion.setFilenames(["/Users/brandon/Documents/Résumé.docx", "/Users/brandon/Library/Mobile Documents/com~apple~CloudDocs/Documents/Family Photos/HPIM0216.JPG"])
 new_onion.share()
 
 
