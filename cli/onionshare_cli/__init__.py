@@ -110,36 +110,7 @@ class OnionShareCli:
             self.onion.cleanup()
         
         
-    def setFilenames(self, filenames):
-        # set filenames
-                        # Validate filenames
-        valid = True
-        for filename in filenames:
-            if not os.path.isfile(filename) and not os.path.isdir(filename):
-                print(f"{filename} is not a valid file.")
-                valid = False
-            if not os.access(filename, os.R_OK):
-                print(f"{filename} is not a readable file.")
-                valid = False
-        if not valid:
-            sys.exit()                # Validate filenames
-        valid = True
-        for filename in filenames:
-            if not os.path.isfile(filename) and not os.path.isdir(filename):
-                print(f"{filename} is not a valid file.")
-                valid = False
-            if not os.access(filename, os.R_OK):
-                print(f"{filename} is not a readable file.")
-                valid = False
-        if not valid:
-            sys.exit()
-        
-        print("Compressing files.")
-        try:
-            self.web.share_mode.set_file_info(filenames)
-        except OSError as e:
-            print(e.strerror)
-            sys.exit(1)
+
     
         
         
@@ -209,8 +180,32 @@ class OnionShareCli:
 
 
 
-
-
+    def setFilenames(self):
+        # choose files to share
+        filenames = []
+        while True:
+            filename = input("Enter file paths to share or press enter to continue: ")
+            if filename == "":
+                break
+            filenames.append(filename)
+        # Validate filenames
+        valid = True
+        for filename in filenames:
+            if not os.path.isfile(filename) and not os.path.isdir(filename):
+                print(f"{filename} is not a valid file.")
+                valid = False
+            if not os.access(filename, os.R_OK):
+                print(f"{filename} is not a readable file.")
+                valid = False
+        if not valid:
+            sys.exit()
+        
+        print("Compressing files.")
+        try:
+            self.web.share_mode.set_file_info(filenames)
+        except OSError as e:
+            print(e.strerror)
+            sys.exit(1)
 
 
 
@@ -668,7 +663,7 @@ def main(cwd=None):
 # DELETE ME _________________________________________________________________________________________
 new_onion = OnionShareCli()
 new_onion.createOnion(mode="share")
-new_onion.setFilenames(["/Users/brandon/Documents/Résumé.docx", "/Users/brandon/Library/Mobile Documents/com~apple~CloudDocs/Documents/Family Photos/HPIM0216.JPG"])
+new_onion.setFilenames()
 new_onion.share()
 
 
