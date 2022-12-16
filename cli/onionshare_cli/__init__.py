@@ -43,7 +43,7 @@ class OnionShareCli:
     
     
     def createOnion(self, mode):
-        # Modes: share, receive, website, chat
+        ''' Modes: share, receive, website, chat '''
         print("Starting web service...")
         self.web = Web(self.common, False, self.mode_settings, mode)
         
@@ -82,16 +82,15 @@ class OnionShareCli:
     
     
     def receive(self):
-        # Receive mode
-        # start the app
+        ''' Receive mode '''
         print("Starting Receive Mode...")
-        app = OnionShare(self.common, self.onion, False, 0)
-        app.choose_port()
-        app.start_onion_service("receive", self.mode_settings, True)
-        url = f"http://{app.onion_host}"
-        print(f"Your OnionShare URL is: {url}")
-        #print(app.auth_string)
         try:  # Trap Ctrl-C
+            app = OnionShare(self.common, self.onion, False, 0)
+            app.choose_port()
+            app.start_onion_service("receive", self.mode_settings, True)
+            url = f"http://{app.onion_host}"
+            print(f"Your OnionShare URL is: {url}")
+        #print(app.auth_string)
             # Start OnionShare http service in new thread
             t = threading.Thread(target=self.web.start, args=(app.port,))
             t.daemon = True
@@ -151,15 +150,15 @@ class OnionShareCli:
 
 
     def share(self):
-        # share files using OnionShare
-        print("Starting Share Mode...")
-        app = OnionShare(self.common, self.onion, False, 0)
-        app.choose_port()
-        app.start_onion_service("share", self.mode_settings, True)
-        url = f"http://{app.onion_host}"
-        print(f"Your OnionShare URL is: {url}")
-        #print(app.auth_string)
+        ''' Share mode '''
         try:  # Trap Ctrl-C
+            print("Starting Share Mode...")
+            app = OnionShare(self.common, self.onion, False, 0)
+            app.choose_port()
+            app.start_onion_service("share", self.mode_settings, True)
+            url = f"http://{app.onion_host}"
+            print(f"Your OnionShare URL is: {url}")
+            #print(app.auth_string)
             # Start OnionShare http service in new thread
             t = threading.Thread(target=self.web.start, args=(app.port,))
             t.daemon = True
@@ -181,7 +180,7 @@ class OnionShareCli:
 
 
     def setFilenames(self):
-        # choose files to share
+        '''Choose the files to share'''
         filenames = []
         while True:
             filename = input("Enter file paths to share or press enter to continue: ")
@@ -661,10 +660,10 @@ def main(cwd=None):
 
 
 # DELETE ME _________________________________________________________________________________________
-new_onion = OnionShareCli()
-new_onion.createOnion(mode="share")
-new_onion.setFilenames()
-new_onion.share()
+# new_onion = OnionShareCli()
+# new_onion.createOnion(mode="share")
+# new_onion.setFilenames()
+# new_onion.share()
 
 
 
