@@ -48,3 +48,13 @@ cli/tests/__pycache__/test_cli_settings.cpython-311-pytest-7.1.3.pyc
 cli/tests/__pycache__/test_cli_web.cpython-311-pytest-7.1.3.pyc
 cli/tests/__pycache__/test_cli.cpython-311-pytest-7.1.3.pyc
 cli/tests/__pycache__/test_range_request.cpython-311-pytest-7.1.3.pyc
+cli/onionshare_cli/__pycache__/censorship.cpython-39.pyc
+cli/onionshare_cli/__pycache__/meek.cpython-39.pyc
+cli/onionshare_cli/__pycache__/mode_settings.cpython-39.pyc
+cli/onionshare_cli/__pycache__/onion.cpython-39.pyc
+cli/onionshare_cli/__pycache__/onionshare.cpython-39.pyc
+cli/onionshare_cli/web/__pycache__/chat_mode.cpython-39.pyc
+cli/onionshare_cli/web/__pycache__/receive_mode.cpython-39.pyc
+cli/onionshare_cli/web/__pycache__/send_base_mode.cpython-39.pyc
+cli/onionshare_cli/web/__pycache__/share_mode.cpython-39.pyc
+cli/onionshare_cli/web/__pycache__/website_mode.cpython-39.pyc

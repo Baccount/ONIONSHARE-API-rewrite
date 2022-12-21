@@ -821,7 +821,7 @@ class Onion(object):
                     )
                     pass
         except Exception:
-            print("Failed to remove ephemeral onion services")
+            pass
 
         if stop_tor:
             # Stop tor process
@@ -863,8 +863,8 @@ class Onion(object):
                             )
                             symbols_i = (symbols_i + 1) % len(symbols)
                             time.sleep(1)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        print(e)
 
                 self.tor_proc.terminate()
                 time.sleep(0.2)

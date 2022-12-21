@@ -67,7 +67,8 @@ class OnionShareCli:
                 local_only=False,
             )
         except KeyboardInterrupt:
-            print("")
+            self.web.cleanup()
+            self.onion.cleanup()
             sys.exit()
         except Exception:
             sys.exit()
@@ -83,6 +84,8 @@ class OnionShareCli:
     
     def receive(self):
         ''' Receive mode '''
+        # start the onion service
+        self.createOnion(mode="receive")
         print("Starting Receive Mode...")
         try:  # Trap Ctrl-C
             app = OnionShare(self.common, self.onion, False, 0)
@@ -110,10 +113,7 @@ class OnionShareCli:
         
         
 
-    
-        
-        
-        
+
         
         
         
@@ -151,6 +151,8 @@ class OnionShareCli:
 
     def share(self):
         ''' Share mode '''
+        # start the onion service
+        self.createOnion(mode="share")
         try:  # Trap Ctrl-C
             print("Starting Share Mode...")
             app = OnionShare(self.common, self.onion, False, 0)
