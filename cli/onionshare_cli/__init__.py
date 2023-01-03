@@ -153,6 +153,8 @@ class OnionShareCli:
         ''' Share mode '''
         # start the onion service
         self.createOnion(mode="share")
+        # get files to share
+        self.setFilenames()
         try:  # Trap Ctrl-C
             print("Starting Share Mode...")
             app = OnionShare(self.common, self.onion, False, 0)
